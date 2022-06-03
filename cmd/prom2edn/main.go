@@ -15,7 +15,6 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -23,10 +22,11 @@ import (
 	"net/url"
 	"os"
 	"time"
+	"olympos.io/encoding/edn"
 
 	dto "github.com/prometheus/client_model/go"
 
-	"github.com/prometheus/prom2json"
+	"github.com/prometheus/prom2edn"
 )
 
 var usage = fmt.Sprintf(`Usage: %s [METRICS_PATH | METRICS_URL [--cert CERT_PATH --key KEY_PATH | --accept-invalid-cert]]`, os.Args[0])
@@ -70,7 +70,7 @@ func main() {
 	// Missing input means we are reading from an URL.
 	if input != nil {
 		go func() {
-			if err := prom2json.ParseReader(input, mfChan); err != nil {
+			if err := prom2edn.ParseReader(input, mfChan); err != nil {
 				fmt.Fprintln(os.Stderr, "error reading metrics:", err)
 				os.Exit(1)
 			}
@@ -82,7 +82,7 @@ func main() {
 			os.Exit(1)
 		}
 		go func() {
-			err := prom2json.FetchMetricFamilies(arg, mfChan, transport)
+			err := prom2edn.FetchMetricFamilies(arg, mfChan, transport)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)
 				os.Exit(1)
@@ -90,16 +90,16 @@ func main() {
 		}()
 	}
 
-	result := []*prom2json.Family{}
+	result := []*prom2edn.Family{}
 	for mf := range mfChan {
-		result = append(result, prom2json.NewFamily(mf))
+		result = append(result, prom2edn.NewFamily(mf))
 	}
-	jsonText, err := json.Marshal(result)
+	ednText, err := edn.Marshal(result)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error marshaling JSON:", err)
 		os.Exit(1)
 	}
-	if _, err := os.Stdout.Write(jsonText); err != nil {
+	if _, err := os.Stdout.Write(ednText); err != nil {
 		fmt.Fprintln(os.Stderr, "error writing to stdout:", err)
 		os.Exit(1)
 	}

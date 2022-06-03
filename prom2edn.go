@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package prom2json
+package prom2edn
 
 import (
 	"fmt"
@@ -30,35 +30,35 @@ const acceptHeader = `application/vnd.google.protobuf;proto=io.prometheus.client
 // Family mirrors the MetricFamily proto message.
 type Family struct {
 	//Time    time.Time
-	Name    string        `json:"name"`
-	Help    string        `json:"help"`
-	Type    string        `json:"type"`
-	Metrics []interface{} `json:"metrics,omitempty"` // Either metric or summary.
+	Name    string        `edn:"name"`
+	Help    string        `edn:"help"`
+	Type    string        `edn:"type"`
+	Metrics []interface{} `edn:"metrics,omitempty"` // Either metric or summary.
 }
 
 // Metric is for all "single value" metrics, i.e. Counter, Gauge, and Untyped.
 type Metric struct {
-	Labels      map[string]string `json:"labels,omitempty"`
-	TimestampMs string            `json:"timestamp_ms,omitempty"`
-	Value       string            `json:"value"`
+	Labels      map[string]string `edn:"labels,omitempty"`
+	TimestampMs string            `edn:"timestamp_ms,omitempty"`
+	Value       string            `edn:"value"`
 }
 
 // Summary mirrors the Summary proto message.
 type Summary struct {
-	Labels      map[string]string `json:"labels,omitempty"`
-	TimestampMs string            `json:"timestamp_ms,omitempty"`
-	Quantiles   map[string]string `json:"quantiles,omitempty"`
-	Count       string            `json:"count"`
-	Sum         string            `json:"sum"`
+	Labels      map[string]string `edn:"labels,omitempty"`
+	TimestampMs string            `edn:"timestamp_ms,omitempty"`
+	Quantiles   map[string]string `edn:"quantiles,omitempty"`
+	Count       string            `edn:"count"`
+	Sum         string            `edn:"sum"`
 }
 
 // Histogram mirrors the Histogram proto message.
 type Histogram struct {
-	Labels      map[string]string `json:"labels,omitempty"`
-	TimestampMs string            `json:"timestamp_ms,omitempty"`
-	Buckets     map[string]string `json:"buckets,omitempty"`
-	Count       string            `json:"count"`
-	Sum         string            `json:"sum"`
+	Labels      map[string]string `edn:"labels,omitempty"`
+	TimestampMs string            `edn:"timestamp_ms,omitempty"`
+	Buckets     map[string]string `edn:"buckets,omitempty"`
+	Count       string            `edn:"count"`
+	Sum         string            `edn:"sum"`
 }
 
 // NewFamily consumes a MetricFamily and transforms it to the local Family type.

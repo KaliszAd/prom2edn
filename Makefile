@@ -18,4 +18,4 @@ include Makefile.common
 
 STATICCHECK_IGNORE =
 
-DOCKER_IMAGE_NAME       ?= prom2json
+DOCKER_IMAGE_NAME       ?= prom2edn

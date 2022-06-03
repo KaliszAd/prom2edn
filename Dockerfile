@@ -5,7 +5,7 @@ LABEL maintainer="The Prometheus Authors <prometheus-developers@googlegroups.com
 
 ARG ARCH="amd64"
 ARG OS="linux"
-COPY .build/${OS}-${ARCH}/prom2json /bin/prom2json
+COPY .build/${OS}-${ARCH}/prom2edn /bin/prom2edn
 
 USER nobody
-ENTRYPOINT  [ "/bin/prom2json" ]
+ENTRYPOINT  [ "/bin/prom2edn" ]
